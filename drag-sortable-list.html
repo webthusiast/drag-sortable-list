@@ -33,89 +33,135 @@
 			},
 
 			dragCallback: {
-				value: {
+				get: function() {
+					var component = this;
+					return {
 
-					handleEvent: function(e) {
-						switch (e.type) {
-						case 'mousedown':
-						case 'touchstart':
-							return this.handleDragStartEvent(e);
-						case 'mousemove':
-						case 'touchmove':
-							return this.handleMoveEvent(e);
-						case 'mouseup':
-						case 'touchend':
-							return this.handleDragEndEvent(e);
-						default: return;
-						}
-					},
+						handleEvent: function(e) {
+							switch (e.type) {
+							case 'mousedown':
+							case 'touchstart':
+								return this.handleDragStartEvent(e);
+							case 'mousemove':
+							case 'touchmove':
+								return this.handleMoveEvent(e);
+							case 'mouseup':
+							case 'touchend':
+								return this.handleDragEndEvent(e);
+							default: return;
+							}
+						},
 
-					handleDragStartEvent: function(e) {
-						switch (e.type) {
-						case 'mousedown':
-							this.moveEventType = 'mousemove';
-							this.dragendEventType = 'mouseup';
-							this.startPageX = e.pageX
-							this.startPageY = e.pageY
-							break;
-						case 'touchstart':
-							this.moveEventType = 'touchmove';
-							this.dragendEventType = 'touchend';
-							this.startPageX = e.touches[0].pageX
-							this.startPageY = e.touches[0].pageY
-							break;
-						default: return;
-						}
-						e.preventDefault();
-						e.stopPropagation();
-						this.target = e.target;
-						this.target.style.transition = '';
-						document.addEventListener(this.moveEventType, this);
-						document.addEventListener(this.dragendEventType, this);
-					},
+						handleDragStartEvent: function(e) {
+							switch (e.type) {
+							case 'mousedown':
+								this.moveEventType = 'mousemove';
+								this.dragendEventType = 'mouseup';
+								this.startPageX = e.pageX
+								this.startPageY = e.pageY
+								break;
+							case 'touchstart':
+								this.moveEventType = 'touchmove';
+								this.dragendEventType = 'touchend';
+								this.startPageX = e.touches[0].pageX
+								this.startPageY = e.touches[0].pageY
+								break;
+							default: return;
+							}
+							e.preventDefault();
+							e.stopPropagation();
+							this.target = e.target;
+							while (this.target.parentNode !== component) {
+								this.target = this.target.parentNode;
+							}
+							this.target.style.zIndex = 1;
+							this.target.style.transition = '';
+							document.addEventListener(this.moveEventType, this);
+							document.addEventListener(this.dragendEventType, this);
+						},
 
-					handleMoveEvent: function(e) {
-						var pageX = null;
-						var pageY = null;
-						switch (e.type) {
-						case 'mousemove':
-							pageX = e.pageX
-							pageY = e.pageY
-							break;
-						case 'touchmove':
-							pageX = e.touches[0].pageX
-							pageY = e.touches[0].pageY
-							break;
-						default: return;
-						}
-						e.preventDefault();
-						e.stopPropagation();
-						this.target.style.left = pageX - this.startPageX;
-						this.target.style.top = pageY - this.startPageY;
-					},
+						handleMoveEvent: function(e) {
+							var pageX = null;
+							var pageY = null;
+							var clientX = null;
+							var clientY = null;
+							switch (e.type) {
+							case 'mousemove':
+								pageX = e.pageX;
+								pageY = e.pageY;
+								clientX = e.clientX;
+								clientY = e.clientY;
+								break;
+							case 'touchmove':
+								pageX = e.touches[0].pageX;
+								pageY = e.touches[0].pageY;
+								clientX = e.changedTouches[0].clientX;
+								clientY = e.changedTouches[0].clientY;
+								break;
+							default: return;
+							}
+							e.preventDefault();
+							e.stopPropagation();
+							// Sort the items.
+							var hoverTarget = component.childFromPoint(clientX, clientY, this.target);
+							if (hoverTarget != null) {
+								var index = Array.prototype.indexOf.bind(component.children);
+								if (index(hoverTarget) < index(this.target)) {
+									component.insertBefore(this.target, hoverTarget);
+								} else {
+									component.appendAfter(this.target, hoverTarget);
+								}
+							}
+							// Move the dragged item.
+							this.target.style.left = pageX - this.startPageX;
+							this.target.style.top = pageY - this.startPageY;
+						},
 
-					handleDragEndEvent: function(e) {
-						switch (e.type) {
-						case 'mouseup':
-						case 'touchend':
-							break;
-						default: return;
-						}
-						e.preventDefault();
-						e.stopPropagation();
-						document.removeEventListener(this.moveEventType, this);
-						document.removeEventListener(this.dragendEventType, this);
-						this.target.style.transition = 'top .3s, left .3s';
-						this.target.style.left = 0;
-						this.target.style.top = 0;
-					},
+						handleDragEndEvent: function(e) {
+							switch (e.type) {
+							case 'mouseup':
+							case 'touchend':
+								break;
+							default: return;
+							}
+							e.preventDefault();
+							e.stopPropagation();
+							document.removeEventListener(this.moveEventType, this);
+							document.removeEventListener(this.dragendEventType, this);
+							this.target.style.transition = 'top .3s, left .3s';
+							this.target.style.zIndex = '';
+							this.target.style.left = 0;
+							this.target.style.top = 0;
+						},
+					}
 				}
-
 			},
 
 			// Properties
 
+			childFromPoint: {
+				value: function(clientX, clientY, ignored) {
+					for (var i = 0; i < this.children.length; i ++) {
+						if (this.children[i] === ignored) continue;
+						var rect = this.children[i].getBoundingClientRect();
+						if (rect.left <= clientX && clientX < rect.right &&
+								rect.top <= clientY && clientY < rect.bottom) {
+							return this.children[i]
+						}
+					}
+				}
+			},
+
 			// Commands
+			appendAfter: {
+				value: function (newChild, refChild) {
+					if (refChild.nextSibling == null) {
+						this.appendChild(newChild);
+					} else {
+						this.insertBefore(newChild, refChild.nextSibling);
+					}
+				}
+			},
 
 		});
 
