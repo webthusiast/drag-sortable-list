@@ -1,0 +1,26 @@
+{
+  "name": "drag-sortable-list",
+  "version": "0.1.0-dev",
+  "description": "a web component for manually sorting a list by dragging and dropping",
+  "main": "drag-sortable-list.html",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "install": "bower install",
+    "start": "python -m SimpleHTTPServer"
+  },
+  "keywords": [
+    "web",
+    "components",
+	"drag",
+	"drop",
+	"sort",
+	"order",
+    "polymer"
+  ],
+  "homepage": "https://github.com/webthusiast/drag-sortable-list",
+  "author": "Roald de Vries <roald@webhtusiast.nl>",
+  "license": "MIT",
+  "dependencies": {
+    "bower": "^1.3.3"
+  }
+}

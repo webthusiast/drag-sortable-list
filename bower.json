@@ -1,0 +1,23 @@
+{
+  "name": "drag-sortable-list",
+  "version": "0.1.0-dev",
+  "homepage": "https://github.com/webthusiast/drag-sortable-list",
+  "authors": [
+    "Roald de Vries <roald@webthusaist.nl>"
+  ],
+  "description": "a web component for manually sorting a list by dragging and dropping",
+  "main": "drag-sortable-list.html",
+  "keywords": [
+    "web",
+    "components",
+    "drag",
+    "drop",
+    "sort",
+    "order",
+    "polymer"
+  ],
+  "license": "MIT",
+  "dependencies": {
+    "platform": "Polymer/platform#~0.4.0"
+  }
+}

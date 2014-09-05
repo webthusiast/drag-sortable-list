@@ -1,0 +1,36 @@
+<template>
+	<content></content>
+</template>
+
+<!-- a single-range slider -->
+<script type="text/javascript">
+	'use strict';
+
+	// create a local scope
+	(function() {
+
+		var template = document._currentScript.ownerDocument.querySelector('template');
+
+		var dragSortableListPrototype = Object.create(HTMLOListElement.prototype, {
+
+			// Event handlers
+
+			createdCallback: {
+				value: function() {
+					this._shadowRoot = this.createShadowRoot();
+					this._shadowRoot.appendChild(document.importNode(template.content, true));
+				}
+			},
+
+			// Properties
+
+			// Commands
+
+		});
+
+		var FieldsetEnabler = document.registerElement('drag-sortable-list', {
+			prototype: dragSortableListPrototype,
+		});
+
+	})();
+</script>
