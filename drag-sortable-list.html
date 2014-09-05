@@ -1,3 +1,9 @@
+<style>
+	drag-sortable-list > * {
+		position: relative;
+	}
+</style>
+
 <template>
 	<content></content>
 </template>
@@ -19,7 +25,87 @@
 				value: function() {
 					this._shadowRoot = this.createShadowRoot();
 					this._shadowRoot.appendChild(document.importNode(template.content, true));
+					// add event handlers
+					this.addEventListener('touchstart', this.dragCallback);
+					this.addEventListener('mousedown', this.dragCallback);
 				}
+			},
+
+			dragCallback: {
+				value: {
+
+					handleEvent: function(e) {
+						switch (e.type) {
+						case 'mousedown':
+						case 'touchstart':
+							return this.handleDragStartEvent(e);
+						case 'mousemove':
+						case 'touchmove':
+							return this.handleMoveEvent(e);
+						case 'mouseup':
+						case 'touchend':
+							return this.handleDragEndEvent(e);
+						default: return;
+						}
+					},
+
+					handleDragStartEvent: function(e) {
+						switch (e.type) {
+						case 'mousedown':
+							this.moveEventType = 'mousemove';
+							this.dragendEventType = 'mouseup';
+							this.startPageX = e.pageX
+							this.startPageY = e.pageY
+							break;
+						case 'touchstart':
+							this.moveEventType = 'touchmove';
+							this.dragendEventType = 'touchend';
+							this.startPageX = e.touches[0].pageX
+							this.startPageY = e.touches[0].pageY
+							break;
+						default: return;
+						}
+						e.preventDefault();
+						e.stopPropagation();
+						this.target = e.target;
+						document.addEventListener(this.moveEventType, this);
+						document.addEventListener(this.dragendEventType, this);
+					},
+
+					handleMoveEvent: function(e) {
+						var pageX = null;
+						var pageY = null;
+						switch (e.type) {
+						case 'mousemove':
+							pageX = e.pageX
+							pageY = e.pageY
+							break;
+						case 'touchmove':
+							pageX = e.touches[0].pageX
+							pageY = e.touches[0].pageY
+							break;
+						default: return;
+						}
+						e.preventDefault();
+						e.stopPropagation();
+						this.target.style.left = pageX - this.startPageX;
+						this.target.style.top = pageY - this.startPageY;
+					},
+
+					handleDragEndEvent: function(e) {
+						switch (e.type) {
+						case 'mouseup':
+						case 'touchend':
+							break;
+						default: return;
+						}
+						e.preventDefault();
+						e.stopPropagation();
+						document.removeEventListener(this.moveEventType, this);
+						document.removeEventListener(this.dragendEventType, this);
+					},
+				}
+
 			},
 
 			// Properties
