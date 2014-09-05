@@ -1,6 +1,7 @@
 <style>
 	drag-sortable-list > * {
 		position: relative;
+		cursor: pointer;
 	}
 </style>
 
@@ -68,6 +69,7 @@
 						e.preventDefault();
 						e.stopPropagation();
 						this.target = e.target;
+						this.target.style.transition = '';
 						document.addEventListener(this.moveEventType, this);
 						document.addEventListener(this.dragendEventType, this);
 					},
@@ -103,6 +105,9 @@
 						e.stopPropagation();
 						document.removeEventListener(this.moveEventType, this);
 						document.removeEventListener(this.dragendEventType, this);
+						this.target.style.transition = 'top .3s, left .3s';
+						this.target.style.left = 0;
+						this.target.style.top = 0;
 					},
 				}
 
