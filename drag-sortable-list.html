@@ -74,6 +74,8 @@
 							while (this.target.parentNode !== component) {
 								this.target = this.target.parentNode;
 							}
+							this.startClientRect = this.target.getBoundingClientRect();
+							this.clientRect = this.target.getBoundingClientRect();
 							this.target.style.zIndex = 1;
 							this.target.style.transition = '';
 							document.addEventListener(this.moveEventType, this);
@@ -105,16 +107,21 @@
 							// Sort the items.
 							var hoverTarget = component.childFromPoint(clientX, clientY, this.target);
 							if (hoverTarget != null) {
+								this.target.style.left = 0;
+								this.target.style.top = 0;
 								var index = Array.prototype.indexOf.bind(component.children);
 								if (index(hoverTarget) < index(this.target)) {
 									component.insertBefore(this.target, hoverTarget);
 								} else {
 									component.appendAfter(this.target, hoverTarget);
 								}
+								this.clientRect = this.target.getBoundingClientRect()
 							}
 							// Move the dragged item.
-							this.target.style.left = pageX - this.startPageX;
-							this.target.style.top = pageY - this.startPageY;
+							this.target.style.left = pageX - this.startPageX +
+								this.startClientRect.left - this.clientRect.left;
+							this.target.style.top = pageY - this.startPageY +
+								this.startClientRect.top - this.clientRect.top;
 						},
 
 						handleDragEndEvent: function(e) {
