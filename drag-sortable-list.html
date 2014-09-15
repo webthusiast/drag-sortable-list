@@ -115,6 +115,9 @@
 								} else {
 									component.appendAfter(this.target, hoverTarget);
 								}
+								var moveEventInit = {bubbles: true, cancelable: true};
+								var moveEvent = new CustomEvent('move', moveEventInit);
+								this.target.dispatchEvent(moveEvent);
 								this.clientRect = this.target.getBoundingClientRect()
 							}
 							// Move the dragged item.
