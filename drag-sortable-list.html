@@ -142,6 +142,9 @@
 							this.target.style.zIndex = '';
 							this.target.style.left = 0;
 							this.target.style.top = 0;
+							var dropEventInit = {bubbles: true, cancelable: true};
+							var dropEvent = new CustomEvent('drop', dropEventInit);
+							this.target.dispatchEvent(dropEvent);
 						},
 					}
 				}
