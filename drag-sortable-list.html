@@ -1,4 +1,8 @@
 <style>
+	drag-sortable-list {
+		display: block;
+		height: 100%;
+	}
 	drag-sortable-list > * {
 		position: relative;
 		cursor: pointer;
@@ -71,6 +75,7 @@
 							e.preventDefault();
 							e.stopPropagation();
 							this.target = e.target;
+							if (this.target === component) return;
 							while (this.target.parentNode !== component) {
 								this.target = this.target.parentNode;
 							}
