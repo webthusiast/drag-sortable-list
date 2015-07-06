@@ -1,6 +1,6 @@
 {
   "name": "drag-sortable-list",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "a web component for manually sorting a list by dragging and dropping",
   "main": "drag-sortable-list.html",
   "scripts": {
