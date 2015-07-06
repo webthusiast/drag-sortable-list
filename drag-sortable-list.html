@@ -127,9 +127,9 @@
 							}
 							// Move the dragged item.
 							this.target.style.left = pageX - this.startPageX +
-								this.startClientRect.left - this.clientRect.left;
+								this.startClientRect.left - this.clientRect.left + 'px';
 							this.target.style.top = pageY - this.startPageY +
-								this.startClientRect.top - this.clientRect.top;
+								this.startClientRect.top - this.clientRect.top + 'px';
 						},
 
 						handleDragEndEvent: function(e) {
