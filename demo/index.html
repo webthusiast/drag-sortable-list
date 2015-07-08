@@ -3,15 +3,25 @@
 	Element.prototype.createShadowRoot = null;
 </script>
 
-<script src="../bower_components/platform/platform.js"></script>
+<script src="../node_modules/webcomponents.js/webcomponents.js"></script>
 <link rel="import" href="../drag-sortable-list.html">
 
 <drag-sortable-list>
 	<li>element 1 <span>the first</span></li>
-	<li>element 2</li>
+	<li>element 2 <button>test click</button></li>
 	<li>element 3</li>
 	<li>element 4</li>
 	<li>element 5</li>
 	<li>element 6</li>
 	<li>element 7</li>
 </drag-sortable-list>
+
+<script>
+var list = document.querySelector('drag-sortable-list');
+var log = function(event) {
+	console.log(event.type, event.detail, event);
+};
+list.addEventListener('click', log);
+list.addEventListener('move', log);
+list.addEventListener('drop', log);
+</script>
